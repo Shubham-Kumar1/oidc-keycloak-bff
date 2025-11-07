@@ -1,0 +1,8 @@
+# See root .gitignore for common patterns
+# This file is for web-specific ignores
+
+.next/
+out/
+.env.local
+.env*.local
+

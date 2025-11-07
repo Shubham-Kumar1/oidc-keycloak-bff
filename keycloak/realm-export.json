@@ -1,0 +1,41 @@
+{
+  "realm": "oidc-demo",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "next-bff",
+      "name": "Next.js BFF",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "dev-secret",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "implicitFlowEnabled": false,
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "redirectUris": [
+        "http://localhost:3000/api/auth/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:3000"
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email"
+      ]
+    }
+  ],
+  "roles": {
+    "realm": [
+      { "name": "user" },
+      { "name": "admin" }
+    ]
+  }
+}
+
+
