@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: oidc-keycloak-bff
+data:
+  # PostgreSQL Configuration
+  POSTGRES_DB: "keycloak"
+  POSTGRES_USER: "keycloak"
+  
+  # Keycloak Configuration
+  KEYCLOAK_ADMIN: "admin"
+  KC_DB: "postgres"
+  KC_DB_USERNAME: "keycloak"
+  KC_DB_URL: "jdbc:postgresql://postgres-service:5432/keycloak"
+  
+  # Next.js Configuration
+  NODE_ENV: "production"
+  PORT: "3000"
+  HOSTNAME: "0.0.0.0"
+  NODE_TLS_REJECT_UNAUTHORIZED: "0"
+  
+  # OIDC Configuration
+  # Use external issuer so tokens match Keycloak's configured hostname
+  # Ensure pods can resolve this domain via DNS (ingress)
+  OIDC_ISSUER_URL: "https://keycloak.shubham.it.com/realms/oidc-demo"
+  OIDC_CLIENT_ID: "next-bff"
+  # External URL used for browser redirects (ingress or port-forward domain)
+  KEYCLOAK_EXTERNAL_URL: "https://keycloak.shubham.it.com"
+  # Use external URLs for redirects (browser needs these)
+  OIDC_REDIRECT_URI: "https://app.shubham.it.com/api/auth/callback"
+  BASE_URL: "https://app.shubham.it.com"
+

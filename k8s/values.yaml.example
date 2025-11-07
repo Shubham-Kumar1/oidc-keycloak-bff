@@ -1,0 +1,91 @@
+# Example values file for customization
+# Copy this to values.yaml and update with your values
+
+# Image configuration
+image:
+  registry: ""  # e.g., "docker.io" or "gcr.io"
+  name: "oidc-keycloak-bff-web"
+  tag: "latest"
+
+# Application URLs (update based on your ingress configuration)
+urls:
+  base: "https://app.shubham.it.com"  # Update with your domain
+  keycloak: "https://keycloak.shubham.it.com"  # Update with your domain
+  oidcIssuer: "https://keycloak.shubham.it.com/realms/oidc-demo"  # External issuer URL
+  redirectUri: "https://app.shubham.it.com/api/auth/callback"  # Update with your domain
+
+# OIDC Configuration
+oidc:
+  clientId: "next-bff"
+  clientSecret: "dev-secret"  # CHANGE THIS IN PRODUCTION
+
+# Database Configuration
+database:
+  name: "keycloak"
+  user: "keycloak"
+  password: "keycloak"  # CHANGE THIS IN PRODUCTION
+
+# Keycloak Configuration
+keycloak:
+  admin: "admin"
+  adminPassword: "admin"  # CHANGE THIS IN PRODUCTION
+
+# Session Configuration
+session:
+  password: "your-super-secret-session-password-at-least-32-characters-long"  # CHANGE THIS IN PRODUCTION
+
+# Storage Configuration
+storage:
+  postgres:
+    size: "10Gi"
+    storageClass: "standard"
+  keycloak:
+    size: "5Gi"
+    storageClass: "standard"
+
+# Resource Limits
+resources:
+  postgres:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  keycloak:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "2000m"
+  web:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+# Replicas
+replicas:
+  postgres: 1
+  keycloak: 1
+  web: 2
+
+# Ingress Configuration
+ingress:
+  enabled: true
+  className: "nginx"  # Adjust based on your ingress controller
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  hosts:
+    - host: "app.shubham.it.com"
+      paths:
+        - path: "/"
+          pathType: "Prefix"
+    - host: "keycloak.shubham.it.com"
+      paths:
+        - path: "/"
+          pathType: "Prefix"
+

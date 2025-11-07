@@ -1,0 +1,12 @@
+# Ignore sensitive files
+secrets.yaml
+values.yaml
+
+# Keep example files
+!secrets.yaml.example
+!values.yaml.example
+
+# Ignore backup files
+*.bak
+*.backup
+

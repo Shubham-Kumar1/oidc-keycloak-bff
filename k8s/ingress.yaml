@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: oidc-keycloak-bff-ingress
+  namespace: oidc-keycloak-bff
+  annotations:
+    # Disable forced HTTPS for local environments; adjust as needed for production
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # For other ingress controllers, adjust annotations accordingly
+spec:
+  ingressClassName: nginx  # Adjust based on your ingress controller
+  rules:
+  - host: keycloak.shubham.it.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: keycloak-service
+            port:
+              number: 8080
+  - host: app.shubham.it.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web-service
+            port:
+              number: 3000
+

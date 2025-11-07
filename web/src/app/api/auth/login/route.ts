@@ -2,6 +2,7 @@ export const runtime = 'nodejs';
 import { NextResponse } from 'next/server';
 import { getClient, pkce } from '@/lib/oidc';
 import { getSession } from '@/lib/session';
+import { toExternalUrl } from '@/lib/url-utils';
 
 export async function GET() {
   try {
@@ -23,7 +24,10 @@ export async function GET() {
       code_challenge_method: 'S256'
     });
 
-    return NextResponse.redirect(authorizationUrl);
+    // Convert internal service URL to external URL for browser access
+    const externalUrl = toExternalUrl(authorizationUrl);
+
+    return NextResponse.redirect(externalUrl);
   } catch (err: any) {
     const message = err?.message || 'Login initiation failed';
     const details = {

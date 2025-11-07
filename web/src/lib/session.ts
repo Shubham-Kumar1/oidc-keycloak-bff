@@ -1,4 +1,4 @@
-import { IronSessionOptions } from 'iron-session';
+import { SessionOptions } from 'iron-session';
 import { cookies } from 'next/headers';
 import { getIronSession } from 'iron-session';
 
@@ -27,23 +27,33 @@ export type UserSession = {
   };
 };
 
-const sessionPassword = process.env.SESSION_PASSWORD;
-if (!sessionPassword) {
-  throw new Error('Missing SESSION_PASSWORD');
+let cachedSessionOptions: SessionOptions | null = null;
+
+function getSessionOptions(): SessionOptions {
+  if (cachedSessionOptions) {
+    return cachedSessionOptions;
+  }
+
+  const sessionPassword = process.env.SESSION_PASSWORD;
+  if (!sessionPassword) {
+    throw new Error('Missing SESSION_PASSWORD');
+  }
+
+  cachedSessionOptions = {
+    password: sessionPassword,
+    cookieName: 'bff_session',
+    cookieOptions: {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production'
+    }
+  };
+
+  return cachedSessionOptions;
 }
 
-export const sessionOptions: IronSessionOptions = {
-  password: sessionPassword,
-  cookieName: 'bff_session',
-  cookieOptions: {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production'
-  }
-};
-
 export async function getSession() {
-  const store = await getIronSession<UserSession>(cookies(), sessionOptions);
+  const store = await getIronSession<UserSession>(cookies(), getSessionOptions());
   if (!store.isLoggedIn) {
     store.isLoggedIn = false;
   }

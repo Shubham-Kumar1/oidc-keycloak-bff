@@ -2,6 +2,7 @@ export const runtime = 'nodejs';
 import { NextResponse } from 'next/server';
 import { getClient } from '@/lib/oidc';
 import { getSession } from '@/lib/session';
+import { toExternalUrl } from '@/lib/url-utils';
 
 export async function GET() {
   const session = await getSession();
@@ -9,10 +10,16 @@ export async function GET() {
 
   let endSessionUrl: string | null = null;
   try {
-    endSessionUrl = client.endSessionUrl({
-      id_token_hint: session.idToken,
+    // id_token_hint is optional - Keycloak can end session without it
+    const endSessionParams: any = {
       post_logout_redirect_uri: (process.env.BASE_URL || 'http://localhost:3000') + '/'
-    });
+    };
+    
+    // Only add id_token_hint if we have it (we don't store it to keep session small)
+    // Keycloak will still work without it
+    const internalEndSessionUrl = client.endSessionUrl(endSessionParams);
+    // Convert internal service URL to external URL for browser access
+    endSessionUrl = toExternalUrl(internalEndSessionUrl);
   } catch {
     // ignore if end session not supported
   }
